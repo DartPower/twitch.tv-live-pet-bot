@@ -7,6 +7,7 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
 
 
 conn = http.client.HTTPSConnection("pet.porcupine.tv")
@@ -30,9 +31,28 @@ headers = {
 
 
 class AuthScreen(GridLayout):
+        def request(self, dt):
+                headers["authorization"] = l.auth.text
+                conn.request("POST", "/channel/{}/message".format(l.chan.text), payload, headers)
+                res = conn.getresponse()
+                data = res.read()
+                try:
+                        print(self.points)
+                        if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
+                                self.points = self.points + 30
+                                self.res.text = "Points :", str(self.points)        
+                except:
+                        pass        
 
+        def quit(self, btn):
+                App.get_running_app().stop()                
+
+        
+        
+        
         def __init__(self, **kwargs):
                 super(AuthScreen, self).__init__(**kwargs)
+                self.points = 0
                 self.cols = 2
                 self.add_widget(Label(text='Channel ID'))
                 self.chan = TextInput(multiline=False)
@@ -42,15 +62,13 @@ class AuthScreen(GridLayout):
                 self.auth = TextInput(multiline=False)
                 self.add_widget(self.auth)
                 self.auth.text = "Enter"
-
-
-
-#class resultsscreen(BoxLayout):
-#        def __init__(self, **kwargs):
- #               super(resultsscreen, self).__init__(**kwargs)
-  #              self.add_widget(Label(text='Points: ', points))        
-                
-
+                self.res = Label(text='Points :')
+                self.add_widget(self.res)
+                self.btn1 = Button(text='Quit')
+                self.btn1.bind(on_press=self.quit)
+                self.add_widget(self.btn1)
+                Clock.schedule_interval(self.request, 1 / 200.)
+        
 
 l = AuthScreen()                
 
@@ -62,25 +80,4 @@ class A_App_About_My_UncleApp(App):
 
 A_App_About_My_UncleApp().run()
         
-
-
-headers["authorization"] = l.auth.text
-i = 0.005
-points = 0                
-while True:
-        time.sleep(i)
-        conn.request("POST", "/channel/{}/message".format(l.chan.text), payload, headers)
-        res = conn.getresponse()
-        data = res.read()
-        try:
-                print(points)
-                if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
-                        points = points + 30
-                
-        except:
-                pass
-
-           
-
-        
-        
+print("Thank you for using this shit app!")
