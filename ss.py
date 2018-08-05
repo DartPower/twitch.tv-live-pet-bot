@@ -32,8 +32,8 @@ headers = {
 
 class AuthScreen(GridLayout):
         def request(self, dt):
-                headers["authorization"] = l.auth.text
-                conn.request("POST", "/channel/{}/message".format(l.chan.text), payload, headers)
+                headers["authorization"] = self.auth.text
+                conn.request("POST", "/channel/{}/message".format(self.chan.text), payload, headers)
                 res = conn.getresponse()
                 data = res.read()
                 try:
@@ -70,13 +70,9 @@ class AuthScreen(GridLayout):
                 Clock.schedule_interval(self.request, 1 / 200.)
         
 
-l = AuthScreen()                
-
-
-
 class A_App_About_My_UncleApp(App):
         def build(self):
-                return l
+                return AuthScreen()
 
 A_App_About_My_UncleApp().run()
         
