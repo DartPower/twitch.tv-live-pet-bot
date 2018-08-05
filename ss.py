@@ -39,7 +39,6 @@ class AuthScreen(GridLayout):
                 self.t = str("Points : "+ str(self.points))
                 lab.text = self.t
                 try:
-                        print(self.points)
                         if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
                                 self.points = self.points + 30       
                 except:
