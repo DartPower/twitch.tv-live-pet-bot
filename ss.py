@@ -8,7 +8,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
-
+from functools import partial
 
 conn = http.client.HTTPSConnection("pet.porcupine.tv")
 
@@ -31,24 +31,23 @@ headers = {
 
 
 class AuthScreen(GridLayout):
-        def request(self, dt):
+        def request(self, lab, dt):
                 headers["authorization"] = self.auth.text
                 conn.request("POST", "/channel/{}/message".format(self.chan.text), payload, headers)
                 res = conn.getresponse()
                 data = res.read()
+                self.t = str("Points : "+ str(self.points))
+                lab.text = self.t
                 try:
                         print(self.points)
                         if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
-                                self.points = self.points + 30
-                                self.res.text = "Points :", str(self.points)        
+                                self.points = self.points + 30       
                 except:
                         pass        
 
         def quit(self, btn):
                 App.get_running_app().stop()                
 
-        
-        
         
         def __init__(self, **kwargs):
                 super(AuthScreen, self).__init__(**kwargs)
@@ -62,12 +61,12 @@ class AuthScreen(GridLayout):
                 self.auth = TextInput(multiline=False)
                 self.add_widget(self.auth)
                 self.auth.text = "Enter"
-                self.res = Label(text='Points :')
+                self.res = Label(text='Points :', font_size=35)
                 self.add_widget(self.res)
                 self.btn1 = Button(text='Quit')
                 self.btn1.bind(on_press=self.quit)
                 self.add_widget(self.btn1)
-                Clock.schedule_interval(self.request, 1 / 200.)
+                Clock.schedule_interval(partial(self.request, self.res), 1 / 200.)
         
 
 class A_App_About_My_UncleApp(App):
