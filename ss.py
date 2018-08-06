@@ -44,10 +44,13 @@ class AuthScreen(GridLayout):
                                 runout.text = "Auth : Authorised"
 
                 except:
-                        if data.decode("utf-8") == "Unauthorized":
-                                runout.text = "Auth : Unauthorised"
-                        else:
-                                runout.text = "Auth : Authorised"        
+                        try:
+                                if data.decode("utf-8") == "Unauthorized":
+                                        runout.text = "Auth : Unauthorised"
+                                else:
+                                        runout.text = "Auth : Authorised"
+                        except:        
+                                pass
                         pass        
 
         def quit(self, btn):
