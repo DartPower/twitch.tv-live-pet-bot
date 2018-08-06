@@ -6,7 +6,6 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
-from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from functools import partial
 
@@ -31,23 +30,31 @@ headers = {
 
 
 class AuthScreen(GridLayout):
-        def request(self, lab, dt):
+        def request(self, lab, runout, dt):
+                
                 headers["authorization"] = self.auth.text
                 conn.request("POST", "/channel/{}/message".format(self.chan.text), payload, headers)
                 res = conn.getresponse()
                 data = res.read()
                 self.t = str("Points : "+ str(self.points))
                 lab.text = self.t
+                print(data.decode("utf-8"))
                 try:
                         if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
-                                self.points = self.points + 30       
+                                self.points = self.points + 30
+                                runout.text = "Auth : Authorised"
+
                 except:
+                        if data.decode("utf-8") == "Unauthorized":
+                                runout.text = "Auth : Unauthorised"
+                        else:
+                                runout.text = "Auth : Authorised"        
                         pass        
 
         def quit(self, btn):
                 App.get_running_app().stop()                
 
-        
+
         def __init__(self, **kwargs):
                 super(AuthScreen, self).__init__(**kwargs)
                 self.points = 0
@@ -56,8 +63,9 @@ class AuthScreen(GridLayout):
                 self.chan = TextInput(multiline=False)
                 self.add_widget(self.chan)
                 self.chan.text = "148072511"
-                self.add_widget(Label(text='Auth'))
-                self.auth = TextInput(multiline=False)
+                self.run = Label(text='Auth : Unauthorised')
+                self.add_widget(self.run)
+                self.auth = TextInput(multiline=True)
                 self.add_widget(self.auth)
                 self.auth.text = "Enter your bearer auth code"
                 self.res = Label(text='Points :', font_size=35)
@@ -65,13 +73,13 @@ class AuthScreen(GridLayout):
                 self.btn1 = Button(text='Quit')
                 self.btn1.bind(on_press=self.quit)
                 self.add_widget(self.btn1)
-                Clock.schedule_interval(partial(self.request, self.res), 1 / 200.)
-        
+                Clock.schedule_interval(partial(self.request, self.res, self.run), 1.0 / 200.0)
+
 
 class A_App_About_My_UncleApp(App):
         def build(self):
                 return AuthScreen()
 
 A_App_About_My_UncleApp().run()
-        
-print("Thank you for using this shit app!")
+
+print("Thank you for using this app!")
