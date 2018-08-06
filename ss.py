@@ -64,7 +64,7 @@ class AuthScreen(GridLayout):
                 self.add_widget(self.chan)
                 self.chan.text = "148072511"
                 self.run = Label(text='Auth : Unauthorised')
-                self.add_widget(self.run)
+                self.add_widget(self.run)    
                 self.auth = TextInput(multiline=True)
                 self.add_widget(self.auth)
                 self.auth.text = "Enter your bearer auth code"
