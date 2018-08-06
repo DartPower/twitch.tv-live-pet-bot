@@ -66,7 +66,7 @@ class AuthScreen(GridLayout):
                 self.add_widget(self.run)    
                 self.auth = TextInput(multiline=True)
                 self.add_widget(self.auth)
-                self.auth.text = "Enter your bearer auth code"
+                self.auth.text = "E.g. Bearer sdasds231as..."
                 self.res = Label(text='Points :', font_size=35)
                 self.add_widget(self.res)
                 self.btn1 = Button(text='Quit')
