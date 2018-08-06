@@ -1,0 +1,2 @@
+@Echo
+python ss.py
