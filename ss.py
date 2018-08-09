@@ -13,9 +13,8 @@ conn = http.client.HTTPSConnection("pet.porcupine.tv")
 
 payload = "{\"action\":\"click\",\"amount\":3}"
 headers = {
-    'cookie': "__cfduid=d01093ad4bc404f7b4bfe29bce44827561532619609",
     'host': "pet.porcupine.tv",
-    'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0",
+    'user-agent': "pyBOT",
     'accept': "application/json, text/javascript, */*; q=0.01",
     'accept-language': "en-US,en;q=0.5",
     'accept-encoding': "gzip, deflate, br",
@@ -31,7 +30,6 @@ headers = {
 
 class AuthScreen(GridLayout):
         def request(self, lab, runout, dt):
-                
                 headers["authorization"] = self.auth.text
                 conn.request("POST", "/channel/{}/message".format(self.chan.text), payload, headers)
                 res = conn.getresponse()
