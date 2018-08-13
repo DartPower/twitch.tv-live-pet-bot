@@ -1,4 +1,4 @@
-import http.client
+import requests
 import time
 import sys
 from kivy.app import App
@@ -9,12 +9,10 @@ from kivy.uix.button import Button
 from kivy.clock import Clock
 from functools import partial
 
-conn = http.client.HTTPSConnection("pet.porcupine.tv")
-
 payload = "{\"action\":\"click\",\"amount\":3}"
 headers = {
     'host': "pet.porcupine.tv",
-    'user-agent': "pyBOT",
+    'user-agent': "python script | https://github.com/Hitsounds/twitch.tv-live-pet-bot | marvelrenju1@gmail.com",
     'accept': "application/json, text/javascript, */*; q=0.01",
     'accept-language': "en-US,en;q=0.5",
     'accept-encoding': "gzip, deflate, br",
@@ -31,25 +29,20 @@ headers = {
 class AuthScreen(GridLayout):
         def request(self, lab, runout, dt):
                 headers["authorization"] = self.auth.text
-                conn.request("POST", "/channel/{}/message".format(self.chan.text), payload, headers)
-                res = conn.getresponse()
-                data = res.read()
+                url = "https://pet.porcupine.tv/channel/{}/message".format(self.chan.text)
+                res = requests.request("POST", url, data=payload, headers=headers)
+                data = res.text
                 self.t = str("Points : "+ str(self.points))
                 lab.text = self.t
                 try:
-                        if data.decode("utf-8")[12] == "0" or data.decode("utf-8")[12] == "1" :
+                        if data[12] == "0" or data[12] == "1" :
                                 self.points = self.points + 30
                                 runout.text = "Auth : Authorised"
-
-                except:
-                        try:
-                                if data.decode("utf-8") == "Unauthorized":
-                                        runout.text = "Auth : Unauthorised"
-                                else:
-                                        runout.text = "Auth : Authorised"
-                        except:        
-                                pass
-                        pass        
+                        elif data == "Unauthorized":
+                                runout.text = "Auth : Unauthorised"
+                except IndexError:
+                        runout.text = "Auth : Authorised"
+                           
 
         def quit(self, btn):
                 App.get_running_app().stop()                
