@@ -11,18 +11,12 @@ from functools import partial
 
 payload = "{\"action\":\"click\",\"amount\":3}"
 headers = {
-    'host': "pet.porcupine.tv",
     'user-agent': "python script | https://github.com/Hitsounds/twitch.tv-live-pet-bot | marvelrenju1@gmail.com",
     'accept': "application/json, text/javascript, */*; q=0.01",
     'accept-language': "en-US,en;q=0.5",
     'accept-encoding': "gzip, deflate, br",
-    'referer': "https://0biqu5sb4f8fq6pxxg09xix27d0uo2.ext-twitch.tv/0biqu5sb4f8fq6pxxg09xix27d0uo2/2.2.0/84b076c36d1653b32972c7eef8c73e2c/viewer.html?anchor=component&language=en&mode=viewer&state=released&platform=web",
     'content-type': "application/json",
     'authorization': "I think not.",
-    'content-length': "29",
-    'origin': "https://0biqu5sb4f8fq6pxxg09xix27d0uo2.ext-twitch.tv",
-    'dnt': "1",
-    'connection': "keep-alive"
     }
 
 
