@@ -2,6 +2,9 @@
 
 A little script I made to interact with the live pet extension on twitch.tv streams.
 
+
+Just use the exe
+
 Requires python (i used 3.7 others may work though).
 Other dependancies can be installed via the .bat file.
 
