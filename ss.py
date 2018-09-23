@@ -8,10 +8,11 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.clock import Clock
 from functools import partial
+import threading
 
 payload = "{\"action\":\"click\",\"amount\":3}"
 headers = {
-    'user-agent': "python script | https://github.com/Hitsounds/twitch.tv-live-pet-bot | marvelrenju1@gmail.com",
+    'user-agent': "python script | https://github.com/Hitsounds/twitch.tv-live-pet-bot",
     'accept': "application/json, text/javascript, */*; q=0.01",
     'accept-language': "en-US,en;q=0.5",
     'accept-encoding': "gzip, deflate, br",
@@ -21,21 +22,23 @@ headers = {
 
 
 class AuthScreen(GridLayout):
-        def request(self, lab, runout, dt):
-                headers["authorization"] = self.auth.text
-                url = "https://pet.porcupine.tv/channel/{}/message".format(self.chan.text)
-                res = requests.request("POST", url, data=payload, headers=headers)
-                data = res.text
-                self.t = str("Points : "+ str(self.points))
-                lab.text = self.t
-                try:
-                        if data[12] == "0" or data[12] == "1" :
-                                self.points = self.points + 30
+        def request(self, lab, runout):
+                while True:
+                        headers["authorization"] = self.auth.text
+                        url = "https://pet.porcupine.tv/channel/{}/message".format(self.chan.text)
+                        res = requests.request("POST", url, data=payload, headers=headers)
+                        data = res.text
+                        self.t = str("Points : "+ str(self.points))
+                        lab.text = self.t
+                        try:
+                                if data == "Unauthorized":
+                                        runout.text = "Auth : Unauthorised"        
+                                elif data[12] == "0" or data[12] == "1":
+                                        self.points = self.points + 30
+                                        runout.text = "Auth : Authorised"
+                        except IndexError:
                                 runout.text = "Auth : Authorised"
-                        elif data == "Unauthorized":
-                                runout.text = "Auth : Unauthorised"
-                except IndexError:
-                        runout.text = "Auth : Authorised"
+                        time.sleep(0.005)
                            
 
         def quit(self, btn):
@@ -60,8 +63,8 @@ class AuthScreen(GridLayout):
                 self.btn1 = Button(text='Quit')
                 self.btn1.bind(on_press=self.quit)
                 self.add_widget(self.btn1)
-                Clock.schedule_interval(partial(self.request, self.res, self.run), 1.0 / 200.0)
-
+                self.thread = threading.Thread(target=partial(self.request, self.res, self.run), daemon=True)
+                self.thread.start()
 
 class A_App_About_My_UncleApp(App):
         def build(self):
