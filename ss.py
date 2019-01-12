@@ -21,22 +21,18 @@ class AuthScreen(GridLayout):
                 }
                 while True:
                         url = "https://pet.porcupine.tv/channel/{}/message".format(chan.text)
-                        print(url)
                         data = requests.request("POST", url, data=payload, headers=req_headers).text
-                        print(data)
                         lab.text =str("Points : "+ str(self.points))
                         try:
                                 if data == "Unauthorized":
                                         runout.text = "Auth : Unauthorised"
-                                        print(chan.text)
-                                        code = requests.get(f"https://api.twitch.tv/v5/channels/{chan.text}/extensions", headers={"client-id": aut.text}).json()
+                                        code = requests.get(f"https://api.twitch.tv/v5/channels/{chan.text}/extensions", headers={"authorization": aut.text}).json()
                                         for i in code["tokens"]:
                                                 if i["extension_id"] == "0biqu5sb4f8fq6pxxg09xix27d0uo2":
                                                         code = i["token"]
-                                                        time.sleep(5)
+                                                        time.sleep(2)
                                                         break
                                         req_headers["authorization"] = f"Bearer {code}"
-                                        print(req_headers)
                                 elif data[12] == "0" or data[12] == "1":
                                         self.points = self.points + 30
                                         runout.text = "Auth : Authorised"
