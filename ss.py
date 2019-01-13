@@ -24,7 +24,7 @@ class AuthScreen(GridLayout):
                         data = requests.request("POST", url, data=payload, headers=req_headers).text
                         lab.text =str("Points : "+ str(self.points))
                         try:
-                                if data == "Unauthorized":
+                                if data == "Unauthorized" or data == "Forbidden":
                                         runout.text = "Auth : Unauthorised"
                                         code = requests.get(f"https://api.twitch.tv/v5/channels/{chan.text}/extensions", headers={"authorization": aut.text}).json()
                                         for i in code["tokens"]:
